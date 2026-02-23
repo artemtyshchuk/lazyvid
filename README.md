@@ -1,8 +1,8 @@
-# lazy-video
+# lazyvid
 
 Lazy-load `<video>` sources with predictable behavior.
 
-`lazy-video` renders an empty `<video>` element and injects `<source>` tags only when the element enters the viewport.  
+`lazyvid` renders an empty `<video>` element and injects `<source>` tags only when the element enters the viewport.  
 Until then — nothing downloads.
 
 It relies on IntersectionObserver for visibility tracking and lets the browser handle native format selection (`webm`, `mp4`, etc).
@@ -28,7 +28,7 @@ Single component. No additional setup.
 Browsers start fetching `<video>` sources as soon as `<source>` elements are present in the DOM.
 On media-heavy pages, this means unnecessary bandwidth usage and background CPU activity — even if the user never scrolls to the video.
 
-`lazy-video` avoids that by delaying source injection until the element becomes visible (with configurable preload offset).
+`lazyvid` avoids that by delaying source injection until the element becomes visible (with configurable preload offset).
 
 - No user-agent checks.
 - No format guessing.
@@ -47,7 +47,7 @@ That’s it.
 ## Install
 
 ```bash
-npm install lazy-video
+npm install lazyvid
 ```
 
 Requires React 18 or 19.
@@ -57,7 +57,7 @@ Requires React 18 or 19.
 ### Basic — just lazy load it
 
 ```tsx
-import { LazyVideo } from "lazy-video";
+import { LazyVideo } from "lazyvid";
 
 <LazyVideo
   sources={[
@@ -139,7 +139,7 @@ By default, loading starts 200px before the video is visible. Want more buffer?
 ## Types
 
 ```ts
-import { LazyVideo, type VideoSource } from "lazy-video";
+import { LazyVideo, type VideoSource } from "lazyvid";
 ```
 
 ## License

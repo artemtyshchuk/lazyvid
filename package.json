@@ -1,5 +1,5 @@
 {
-  "name": "lazy-video",
+  "name": "lazyvid",
   "version": "0.1.0",
   "description": "Lightweight lazy-loading video component with IntersectionObserver",
   "main": "dist/index.cjs",
