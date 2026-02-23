@@ -7,7 +7,7 @@ Until then — nothing downloads.
 
 It relies on IntersectionObserver for visibility tracking and lets the browser handle native format selection (`webm`, `mp4`, etc).
 
-~2 KB. Zero dependencies. Full TypeScript support.
+~2 KB (ESM bundle). Zero dependencies. Full TypeScript support.
 
 ```tsx
 <LazyVideo
