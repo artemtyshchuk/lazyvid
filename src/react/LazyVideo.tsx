@@ -35,12 +35,15 @@ export const LazyVideo = ({
       element: elem,
       options: { threshold, rootMargin },
       onIntersect: () => {
+        if (sourcesRef.current.length === 0) return;
+
         sourcesRef.current.forEach(({ src, type }) => {
           const source = document.createElement("source");
           source.src = src;
           source.type = type;
           elem.appendChild(source);
         });
+
         elem.load();
         setLoaded(true);
         onLoadedRef.current?.();
