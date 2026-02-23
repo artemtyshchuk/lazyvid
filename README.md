@@ -1,14 +1,19 @@
 # lazy-video
 
-Stop loading videos your users never see.
+Lazy-load `<video>` sources with predictable behavior.
 
-`lazy-video` is a tiny React component that defers video loading until the element is actually in the viewport. Drop it in, pass your sources, and forget about it — the browser does the rest.
+`lazy-video` renders an empty `<video>` element and injects `<source>` tags only when the element enters the viewport.  
+Until then — nothing downloads.
+
+It relies on IntersectionObserver for visibility tracking and lets the browser handle native format selection (`webm`, `mp4`, etc).
+
+~2 KB. Zero dependencies. Full TypeScript support.
 
 ```tsx
 <LazyVideo
   sources={[
-    { src: '/hero.webm', type: 'video/webm' },
-    { src: '/hero.mp4', type: 'video/mp4' },
+    { src: "/hero.webm", type: "video/webm" },
+    { src: "/hero.mp4", type: "video/mp4" },
   ]}
   muted
   autoPlay
@@ -16,19 +21,28 @@ Stop loading videos your users never see.
 />
 ```
 
-No config files. No providers. No hooks to wire up. Just a component.
+Single component. No additional setup.
 
 ## Why?
 
-You have a landing page with a beautiful background video. Problem: the browser starts downloading it immediately, even if the user never scrolls that far. Multiply that by 3-4 videos on a page and you're burning bandwidth for nothing.
+Browsers start fetching `<video>` sources as soon as `<source>` elements are present in the DOM.
+On media-heavy pages, this means unnecessary bandwidth usage and background CPU activity — even if the user never scrolls to the video.
 
-`lazy-video` solves this with IntersectionObserver under the hood:
+`lazy-video` avoids that by delaying source injection until the element becomes visible (with configurable preload offset).
 
-- Video stays empty until it enters the viewport
-- Sources are injected on demand — browser picks the best format
-- Optional auto-pause when the user scrolls past
+- No user-agent checks.
+- No format guessing.
 
-~2 KB. Zero dependencies. Full TypeScript support.
+The browser still decides which source to play.
+
+## What it does
+
+- Renders an empty `<video>`
+- Observes it with IntersectionObserver
+- Injects `<source>` elements when it enters the viewport
+- Optionally pauses playback when it leaves
+
+That’s it.
 
 ## Install
 
@@ -43,15 +57,15 @@ Requires React 18 or 19.
 ### Basic — just lazy load it
 
 ```tsx
-import { LazyVideo } from 'lazy-video';
+import { LazyVideo } from "lazy-video";
 
 <LazyVideo
   sources={[
-    { src: '/promo.webm', type: 'video/webm' },
-    { src: '/promo.mp4', type: 'video/mp4' },
+    { src: "/promo.webm", type: "video/webm" },
+    { src: "/promo.mp4", type: "video/mp4" },
   ]}
   controls
-/>
+/>;
 ```
 
 Sources are listed in priority order. The browser takes the first format it supports — put your lightest format first.
@@ -61,14 +75,14 @@ Sources are listed in priority order. The browser takes the first format it supp
 ```tsx
 <LazyVideo
   sources={[
-    { src: '/bg.webm', type: 'video/webm' },
-    { src: '/bg.mp4', type: 'video/mp4' },
+    { src: "/bg.webm", type: "video/webm" },
+    { src: "/bg.mp4", type: "video/mp4" },
   ]}
   autoPlay
   muted
   loop
   pauseOnLeave
-  style={{ width: '100%', objectFit: 'cover' }}
+  style={{ width: "100%", objectFit: "cover" }}
 />
 ```
 
@@ -79,15 +93,15 @@ When the user scrolls away — video pauses. Scrolls back — resumes. No wasted
 ```tsx
 const [ready, setReady] = useState(false);
 
-<div style={{ position: 'relative' }}>
+<div style={{ position: "relative" }}>
   {!ready && <div className="skeleton" />}
   <LazyVideo
-    sources={[{ src: '/intro.mp4', type: 'video/mp4' }]}
+    sources={[{ src: "/intro.mp4", type: "video/mp4" }]}
     poster="/intro-thumb.jpg"
     controls
     onLoaded={() => setReady(true)}
   />
-</div>
+</div>;
 ```
 
 ### Start loading earlier
@@ -96,7 +110,7 @@ By default, loading starts 200px before the video is visible. Want more buffer?
 
 ```tsx
 <LazyVideo
-  sources={[{ src: '/hero.mp4', type: 'video/mp4' }]}
+  sources={[{ src: "/hero.mp4", type: "video/mp4" }]}
   rootMargin="500px"
   muted
   autoPlay
@@ -105,14 +119,14 @@ By default, loading starts 200px before the video is visible. Want more buffer?
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `sources` | `VideoSource[]` | required | `{ src, type }` objects in priority order |
-| `threshold` | `number` | `0` | How much of the element should be visible (0–1) |
-| `rootMargin` | `string` | `"200px"` | Start loading before the element is in view |
-| `pauseOnLeave` | `boolean` | `false` | Pause when out of viewport, resume when back |
-| `onLoaded` | `() => void` | — | Fires when sources are injected |
-| `...rest` | `VideoHTMLAttributes` | — | Any native `<video>` attribute works |
+| Prop           | Type                  | Default   | Description                                     |
+| -------------- | --------------------- | --------- | ----------------------------------------------- |
+| `sources`      | `VideoSource[]`       | required  | `{ src, type }` objects in priority order       |
+| `threshold`    | `number`              | `0`       | How much of the element should be visible (0–1) |
+| `rootMargin`   | `string`              | `"200px"` | Start loading before the element is in view     |
+| `pauseOnLeave` | `boolean`             | `false`   | Pause when out of viewport, resume when back    |
+| `onLoaded`     | `() => void`          | —         | Fires when sources are injected                 |
+| `...rest`      | `VideoHTMLAttributes` | —         | Any native `<video>` attribute works            |
 
 ## How it works
 
@@ -125,7 +139,7 @@ By default, loading starts 200px before the video is visible. Want more buffer?
 ## Types
 
 ```ts
-import { LazyVideo, type VideoSource } from 'lazy-video';
+import { LazyVideo, type VideoSource } from "lazy-video";
 ```
 
 ## License
