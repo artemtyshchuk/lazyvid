@@ -64,6 +64,7 @@ import { LazyVideo } from "lazyvid";
     { src: "/promo.webm", type: "video/webm" },
     { src: "/promo.mp4", type: "video/mp4" },
   ]}
+  poster="/promo-poster.jpg"
   controls
 />;
 ```
@@ -78,6 +79,7 @@ Sources are listed in priority order. The browser takes the first format it supp
     { src: "/bg.webm", type: "video/webm" },
     { src: "/bg.mp4", type: "video/mp4" },
   ]}
+  poster="/bg-poster.jpg"
   autoPlay
   muted
   loop
@@ -88,20 +90,29 @@ Sources are listed in priority order. The browser takes the first format it supp
 
 When the user scrolls away — video pauses. Scrolls back — resumes. No wasted CPU on invisible playback.
 
-### With poster and loading callback
+### onLoaded — trigger actions when video enters viewport
+
+onLoaded fires once, when the video enters the viewport, `<source>` elements are injected, and loading starts. It does not fire when loading is complete — use `onCanPlay` for that.
+
+This allows you to build logic on top of it, for example:
+
+- start animations or UI effects
+- show captions or overlays
+- preload next section, next video, or related data
+- track engagement: the user reached this video
 
 ```tsx
-const [ready, setReady] = useState(false);
-
 <div style={{ position: "relative" }}>
-  {!ready && <div className="skeleton" />}
   <LazyVideo
     sources={[{ src: "/intro.mp4", type: "video/mp4" }]}
     poster="/intro-thumb.jpg"
     controls
-    onLoaded={() => setReady(true)}
+    onLoaded={() => {
+      console.log("Video entered viewport, loading started!");
+      // trigger animations, preload next content, track engagement...
+    }}
   />
-</div>;
+</div>
 ```
 
 ### Start loading earlier
